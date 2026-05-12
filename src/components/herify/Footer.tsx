@@ -13,7 +13,10 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-16">
         <div className="grid gap-10 md:grid-cols-5">
           <div className="md:col-span-2">
-            <img src={logo} alt="Herify" className="h-9 w-auto" />
+            <div className="flex items-center gap-2">
+              <img src={logo} alt="Herify" className="h-10 w-10 object-contain" />
+              <span className="text-xl font-semibold tracking-tight">Herify</span>
+            </div>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
               Herify is the decentralized inheritance layer for the on-chain era —
               ensuring your digital legacy reaches the people you love.

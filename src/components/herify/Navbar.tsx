@@ -35,7 +35,8 @@ export default function Navbar() {
           }`}
         >
           <a href="#top" className="flex items-center gap-2">
-            <img src={logo} alt="Herify" className="h-8 w-auto" />
+            <img src={logo} alt="Herify" className="h-9 w-9 object-contain" />
+            <span className="text-lg font-semibold tracking-tight">Herify</span>
           </a>
           <nav className="hidden items-center gap-8 md:flex">
             {links.map((l) => (
