@@ -30,16 +30,6 @@ export default function Hero() {
 
       <div className="container relative mx-auto px-4">
         <div className="mx-auto max-w-3xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mx-auto inline-flex items-center gap-2 rounded-full border border-border/60 bg-white/70 px-4 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur"
-          >
-            <span className="h-2 w-2 rounded-full bg-brand-green animate-pulse-glow" />
-            Web3 Inheritance · Built on decentralized storage
-          </motion.div>
-
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
