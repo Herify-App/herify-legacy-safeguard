@@ -72,10 +72,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Herify — Secure Your Digital Legacy On-Chain" },
+      { title: "Herify" },
       { name: "description", content: "Herify securely stores crypto assets, passwords, legal documents and digital files in decentralized storage — accessible to trusted loved ones when it matters most." },
       { name: "author", content: "Herify" },
-      { property: "og:title", content: "Herify — Secure Your Digital Legacy On-Chain" },
+      { property: "og:title", content: "Herify" },
       { property: "og:description", content: "Decentralized inheritance for crypto, passwords and important documents." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -86,6 +86,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "apple-touch-icon", href: "/favicon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
