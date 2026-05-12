@@ -1,4 +1,4 @@
-import { Twitter, Github, Linkedin } from "lucide-react";
+import { Twitter, Linkedin, Send } from "lucide-react";
 import logo from "@/assets/herify-logo.png";
 
 const cols = [
@@ -22,7 +22,7 @@ export default function Footer() {
               ensuring your digital legacy reaches the people you love.
             </p>
             <div className="mt-5 flex gap-3">
-              {[Twitter, Github, Linkedin].map((Icon, i) => (
+              {[Twitter, Send, Linkedin].map((Icon, i) => (
                 <a
                   key={i}
                   href="#"
