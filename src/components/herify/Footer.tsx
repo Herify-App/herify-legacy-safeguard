@@ -22,10 +22,17 @@ export default function Footer() {
               ensuring your digital legacy reaches the people you love.
             </p>
             <div className="mt-5 flex gap-3">
-              {[Twitter, Send, Linkedin].map((Icon, i) => (
+              {[
+                { Icon: Twitter, href: "https://x.com/Herify_app", label: "X (Twitter)" },
+                { Icon: Send, href: "https://t.me/herifyofficial", label: "Telegram" },
+                { Icon: Linkedin, href: "#", label: "LinkedIn" },
+              ].map(({ Icon, href, label }) => (
                 <a
-                  key={i}
-                  href="#"
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
                   className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-white text-muted-foreground transition-colors hover:text-primary"
                 >
                   <Icon className="h-4 w-4" />
