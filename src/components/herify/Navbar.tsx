@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/herify-logo.png";
 
@@ -50,11 +51,11 @@ export default function Navbar() {
             ))}
           </nav>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" className="hidden sm:inline-flex">
-              Sign in
+            <Button variant="ghost" className="hidden sm:inline-flex" asChild>
+              <Link to="/sign-in">Sign in</Link>
             </Button>
-            <Button className="bg-gradient-brand text-white shadow-soft hover:opacity-95">
-              Get Started
+            <Button className="bg-gradient-brand text-white shadow-soft hover:opacity-95" asChild>
+              <Link to="/get-started">Get Started</Link>
             </Button>
           </div>
         </div>
