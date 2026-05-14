@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ShieldCheck, Network, KeyRound, EyeOff } from "lucide-react";
 import dashboard from "@/assets/hero-dashboard.png";
@@ -60,8 +61,11 @@ export default function Hero() {
             <Button
               size="lg"
               className="bg-gradient-brand text-white shadow-glow hover:opacity-95"
+              asChild
             >
-              Get Started <ArrowRight className="ml-1 h-4 w-4" />
+              <Link to="/get-started">
+                Get Started <ArrowRight className="ml-1 h-4 w-4" />
+              </Link>
             </Button>
             <Button size="lg" variant="outline" className="bg-white/70 backdrop-blur">
               Learn More
