@@ -1,10 +1,35 @@
 import { Twitter, Linkedin, Send } from "lucide-react";
 import logo from "@/assets/herify-logo.png";
 
-const cols = [
-  { title: "Product", links: ["Features", "Security", "Pricing", "Changelog"] },
-  { title: "Company", links: ["About", "Careers", "Press", "Contact"] },
-  { title: "Resources", links: ["Docs", "Whitepaper", "Blog", "Status"] },
+type FooterLink = { label: string; href: string };
+const cols: { title: string; links: FooterLink[] }[] = [
+  {
+    title: "Product",
+    links: [
+      { label: "Features", href: "#" },
+      { label: "Security", href: "#" },
+      { label: "Pricing", href: "#" },
+      { label: "Changelog", href: "#" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About", href: "#" },
+      { label: "Careers", href: "#" },
+      { label: "Press", href: "#" },
+      { label: "Contact", href: "#" },
+    ],
+  },
+  {
+    title: "Resources",
+    links: [
+      { label: "Docs", href: "#" },
+      { label: "Whitepaper", href: "https://docsend.com/v/v2b9x/herifylitepaper" },
+      { label: "Blog", href: "#" },
+      { label: "Status", href: "#" },
+    ],
+  },
 ];
 
 export default function Footer() {
@@ -45,8 +70,15 @@ export default function Footer() {
               <div className="text-sm font-semibold">{c.title}</div>
               <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
                 {c.links.map((l) => (
-                  <li key={l}>
-                    <a href="#" className="transition-colors hover:text-foreground">{l}</a>
+                  <li key={l.label}>
+                    <a
+                      href={l.href}
+                      target={l.href.startsWith("http") ? "_blank" : undefined}
+                      rel={l.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                      className="transition-colors hover:text-foreground"
+                    >
+                      {l.label}
+                    </a>
                   </li>
                 ))}
               </ul>
