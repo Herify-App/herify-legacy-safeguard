@@ -51,8 +51,8 @@ export default function Navbar() {
             ))}
           </nav>
           <div className="flex items-center gap-2">
-            <Button className="bg-gradient-brand text-white shadow-soft hover:opacity-95" asChild>
-              <Link to="/sign-in">Launch Dapp</Link>
+            <Button className="bg-gradient-brand text-white shadow-soft hover:opacity-95">
+              Launch Dapp
             </Button>
           </div>
         </div>
