@@ -51,11 +51,8 @@ export default function Navbar() {
             ))}
           </nav>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" className="hidden sm:inline-flex" asChild>
-              <Link to="/sign-in">Sign in</Link>
-            </Button>
             <Button className="bg-gradient-brand text-white shadow-soft hover:opacity-95" asChild>
-              <Link to="/sign-in">Get Started</Link>
+              <Link to="/sign-in">Launch Dapp</Link>
             </Button>
           </div>
         </div>
