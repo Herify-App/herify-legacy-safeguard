@@ -55,7 +55,7 @@ export default function Navbar() {
               <Link to="/sign-in">Sign in</Link>
             </Button>
             <Button className="bg-gradient-brand text-white shadow-soft hover:opacity-95" asChild>
-              <Link to="/get-started">Get Started</Link>
+              <Link to="/sign-in">Get Started</Link>
             </Button>
           </div>
         </div>

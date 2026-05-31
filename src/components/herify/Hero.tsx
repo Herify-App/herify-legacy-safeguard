@@ -63,7 +63,7 @@ export default function Hero() {
               className="bg-gradient-brand text-white shadow-glow hover:opacity-95"
               asChild
             >
-              <Link to="/get-started">
+              <Link to="/sign-in">
                 Get Started <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
