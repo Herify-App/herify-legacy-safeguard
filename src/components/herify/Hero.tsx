@@ -61,11 +61,8 @@ export default function Hero() {
             <Button
               size="lg"
               className="bg-gradient-brand text-white shadow-glow hover:opacity-95"
-              asChild
             >
-              <Link to="/sign-in">
-                Get Started <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
+              Get Started <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
             <Button size="lg" variant="outline" className="bg-white/70 backdrop-blur">
               Learn More
