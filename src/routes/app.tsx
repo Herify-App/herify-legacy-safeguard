@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ArrowLeft, ShieldCheck, KeyRound, Mail, Lock, User } from "lucide-react";
 import logo from "@/assets/herify-logo.png";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/app")({
   head: () => ({
@@ -28,6 +30,12 @@ export const Route = createFileRoute("/app")({
 });
 
 function AppAuthPage() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) navigate({ to: "/dashboard", replace: true });
+    });
+  }, [navigate]);
   return (
     <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
       <div className="absolute inset-0 bg-gradient-hero" />
@@ -128,11 +136,39 @@ function AppAuthPage() {
 
 function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const form = e.currentTarget as HTMLFormElement;
+    const fd = new FormData(form);
+    const email = String(fd.get("email") || "");
+    const password = String(fd.get("password") || "");
+    const name = String(fd.get("name") || "");
     setSubmitting(true);
-    setTimeout(() => setSubmitting(false), 800);
+    try {
+      if (mode === "signup") {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/dashboard`,
+            data: { display_name: name },
+          },
+        });
+        if (error) throw error;
+        toast.success("Account created. Check your email to confirm.");
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        toast.success("Welcome back!");
+        navigate({ to: "/dashboard", replace: true });
+      }
+    } catch (err: any) {
+      toast.error(err?.message ?? "Authentication failed");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -142,7 +178,7 @@ function AuthForm({ mode }: { mode: "login" | "signup" }) {
           <Label htmlFor="name">Full name</Label>
           <div className="relative">
             <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input id="name" placeholder="Jane Doe" className="pl-9" required />
+            <Input id="name" name="name" placeholder="Jane Doe" className="pl-9" required />
           </div>
         </div>
       )}
@@ -153,6 +189,7 @@ function AuthForm({ mode }: { mode: "login" | "signup" }) {
           <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             id="email"
+            name="email"
             type="email"
             placeholder="you@herify.app"
             className="pl-9"
@@ -174,6 +211,7 @@ function AuthForm({ mode }: { mode: "login" | "signup" }) {
           <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             id="password"
+            name="password"
             type="password"
             placeholder="••••••••"
             className="pl-9"
