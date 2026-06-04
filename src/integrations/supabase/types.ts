@@ -14,7 +14,113 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      assets: {
+        Row: {
+          asset_type: string
+          created_at: string
+          description: string | null
+          id: string
+          lock_mode: Database["public"]["Enums"]["lock_mode"]
+          name: string
+          status: Database["public"]["Enums"]["asset_status"]
+          unlock_at: string | null
+          updated_at: string
+          user_id: string
+          value: number | null
+        }
+        Insert: {
+          asset_type: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          lock_mode?: Database["public"]["Enums"]["lock_mode"]
+          name: string
+          status?: Database["public"]["Enums"]["asset_status"]
+          unlock_at?: string | null
+          updated_at?: string
+          user_id: string
+          value?: number | null
+        }
+        Update: {
+          asset_type?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          lock_mode?: Database["public"]["Enums"]["lock_mode"]
+          name?: string
+          status?: Database["public"]["Enums"]["asset_status"]
+          unlock_at?: string | null
+          updated_at?: string
+          user_id?: string
+          value?: number | null
+        }
+        Relationships: []
+      }
+      beneficiaries: {
+        Row: {
+          asset_id: string
+          created_at: string
+          email: string
+          id: string
+          name: string
+          owner_id: string
+          share_percent: number
+          updated_at: string
+        }
+        Insert: {
+          asset_id: string
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          owner_id: string
+          share_percent?: number
+          updated_at?: string
+        }
+        Update: {
+          asset_id?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          owner_id?: string
+          share_percent?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "beneficiaries_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +129,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      asset_status: "locked" | "released"
+      lock_mode: "time_lock" | "manual"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +257,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      asset_status: ["locked", "released"],
+      lock_mode: ["time_lock", "manual"],
+    },
   },
 } as const
