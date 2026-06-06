@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { ArrowLeft, ShieldCheck, KeyRound, Mail, Lock, User } from "lucide-react";
 import logo from "@/assets/herify-logo.png";
 import { supabase } from "@/integrations/supabase/client";
@@ -136,6 +137,7 @@ function AppAuthPage() {
 
 function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const [submitting, setSubmitting] = useState(false);
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -152,12 +154,12 @@ function AuthForm({ mode }: { mode: "login" | "signup" }) {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/dashboard`,
             data: { display_name: name },
           },
         });
         if (error) throw error;
-        toast.success("Account created. Check your email to confirm.");
+        setPendingEmail(email);
+        toast.success("We sent a 6-digit code to your email.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -170,6 +172,16 @@ function AuthForm({ mode }: { mode: "login" | "signup" }) {
       setSubmitting(false);
     }
   };
+
+  if (mode === "signup" && pendingEmail) {
+    return (
+      <VerifyOtpForm
+        email={pendingEmail}
+        onBack={() => setPendingEmail(null)}
+        onVerified={() => navigate({ to: "/dashboard", replace: true })}
+      />
+    );
+  }
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
@@ -229,6 +241,104 @@ function AuthForm({ mode }: { mode: "login" | "signup" }) {
       >
         {submitting ? "Please wait…" : mode === "login" ? "Log in" : "Create account"}
       </Button>
+    </form>
+  );
+}
+
+function VerifyOtpForm({
+  email,
+  onBack,
+  onVerified,
+}: {
+  email: string;
+  onBack: () => void;
+  onVerified: () => void;
+}) {
+  const [code, setCode] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [resending, setResending] = useState(false);
+
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (code.length !== 6) return;
+    setSubmitting(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: code,
+        type: "signup",
+      });
+      if (error) throw error;
+      toast.success("Email verified!");
+      onVerified();
+    } catch (err: any) {
+      toast.error(err?.message ?? "Invalid or expired code");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setResending(true);
+    try {
+      const { error } = await supabase.auth.resend({ type: "signup", email });
+      if (error) throw error;
+      toast.success("New code sent.");
+    } catch (err: any) {
+      toast.error(err?.message ?? "Could not resend code");
+    } finally {
+      setResending(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleVerify} className="space-y-5">
+      <div className="space-y-1 text-center">
+        <h3 className="text-lg font-semibold">Enter verification code</h3>
+        <p className="text-sm text-muted-foreground">
+          We sent a 6-digit code to <span className="text-foreground">{email}</span>
+        </p>
+      </div>
+
+      <div className="flex justify-center">
+        <InputOTP maxLength={6} value={code} onChange={setCode}>
+          <InputOTPGroup>
+            <InputOTPSlot index={0} />
+            <InputOTPSlot index={1} />
+            <InputOTPSlot index={2} />
+            <InputOTPSlot index={3} />
+            <InputOTPSlot index={4} />
+            <InputOTPSlot index={5} />
+          </InputOTPGroup>
+        </InputOTP>
+      </div>
+
+      <Button
+        type="submit"
+        size="lg"
+        disabled={submitting || code.length !== 6}
+        className="w-full bg-gradient-brand text-white shadow-glow hover:opacity-95"
+      >
+        {submitting ? "Verifying…" : "Verify & continue"}
+      </Button>
+
+      <div className="flex items-center justify-between text-xs">
+        <button
+          type="button"
+          onClick={onBack}
+          className="text-muted-foreground hover:text-foreground"
+        >
+          ← Use different email
+        </button>
+        <button
+          type="button"
+          onClick={handleResend}
+          disabled={resending}
+          className="text-muted-foreground hover:text-foreground disabled:opacity-50"
+        >
+          {resending ? "Sending…" : "Resend code"}
+        </button>
+      </div>
     </form>
   );
 }
