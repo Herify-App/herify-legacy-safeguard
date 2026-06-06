@@ -257,35 +257,59 @@ function VerifyOtpForm({
   const [code, setCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [resending, setResending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (code.length !== 6) return;
+  const verify = async (otpCode: string) => {
     setSubmitting(true);
+    setError(null);
     try {
-      const { error } = await supabase.auth.verifyOtp({
+      const { error: verifyError } = await supabase.auth.verifyOtp({
         email,
-        token: code,
+        token: otpCode,
         type: "signup",
       });
-      if (error) throw error;
+      if (verifyError) throw verifyError;
       toast.success("Email verified!");
       onVerified();
     } catch (err: any) {
-      toast.error(err?.message ?? "Invalid or expired code");
+      const msg = err?.message?.toLowerCase() ?? "";
+      if (msg.includes("expired")) {
+        setError("This code has expired. Please request a new one.");
+      } else if (msg.includes("invalid") || msg.includes("incorrect") || msg.includes("token")) {
+        setError("Invalid code. Please check and try again.");
+      } else {
+        setError(err?.message ?? "Verification failed. Please try again.");
+      }
     } finally {
       setSubmitting(false);
     }
   };
 
+  useEffect(() => {
+    if (code.length === 6 && !submitting) {
+      verify(code);
+    }
+  }, [code]);
+
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (code.length !== 6) {
+      setError("Please enter all 6 digits.");
+      return;
+    }
+    await verify(code);
+  };
+
   const handleResend = async () => {
     setResending(true);
+    setError(null);
     try {
-      const { error } = await supabase.auth.resend({ type: "signup", email });
-      if (error) throw error;
+      const { error: resendError } = await supabase.auth.resend({ type: "signup", email });
+      if (resendError) throw resendError;
       toast.success("New code sent.");
+      setCode("");
     } catch (err: any) {
-      toast.error(err?.message ?? "Could not resend code");
+      setError(err?.message ?? "Could not resend code. Please try again.");
     } finally {
       setResending(false);
     }
@@ -300,8 +324,17 @@ function VerifyOtpForm({
         </p>
       </div>
 
-      <div className="flex justify-center">
-        <InputOTP maxLength={6} value={code} onChange={setCode}>
+      <div className="flex flex-col items-center gap-2">
+        <InputOTP
+          maxLength={6}
+          value={code}
+          onChange={(val) => {
+            setCode(val);
+            if (error) setError(null);
+          }}
+          autoFocus
+          disabled={submitting}
+        >
           <InputOTPGroup>
             <InputOTPSlot index={0} />
             <InputOTPSlot index={1} />
@@ -311,6 +344,12 @@ function VerifyOtpForm({
             <InputOTPSlot index={5} />
           </InputOTPGroup>
         </InputOTP>
+
+        {error && (
+          <p className="text-xs text-destructive" role="alert" aria-live="polite">
+            {error}
+          </p>
+        )}
       </div>
 
       <Button
